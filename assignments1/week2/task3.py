@@ -22,10 +22,12 @@ print(f"\nThe time on Earth is {time[0]} hours {time[1]} minutes and {time[2]} s
 print("TIME ON TRISOLARIS")
 minute_scale = int(input("Input the number of seconds in a minute on Trisolaris:\n"))
 hour_scale = int(input("Input the number of minutes in an hour on Trisolaris:\n"))
+# input the time scales
 tri_time = time_fun(seconds,minute_scale,hour_scale)
 print(f"\nThe time on Trisolaris is {tri_time[0]} hours {tri_time[1]} minutes and {tri_time[2]} seconds.")
 
 print("TIME AFTER WAITING ON TRISOLARIS")
 duration = int(input("Input a duration in seconds:\n"))
 wait_time = time_fun(seconds+duration,minute_scale,hour_scale)
+# input the seconds and the duration
 print(f"\nThe time on Trisolaris after waiting is {wait_time[0]} hours {wait_time[1]} minutes and {wait_time[2]} seconds.")
