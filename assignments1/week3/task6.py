@@ -1,14 +1,17 @@
-alist = ["Ava","Leo","Raj","Zoe","Max","Sam","Eli","Mia","Ian","Kim"]
-plist = ["12345","abcde","pass1","qwert","aaaaa","zzzzz","11111","apple","hello","admin"]
+'''
+This program
+'''
+account = ["Ava","Leo","Raj","Zoe","Max","Sam","Eli","Mia","Ian","Kim"]
+password = ["12345","abcde","pass1","qwert","aaaaa","zzzzz","11111","apple","hello","admin"]
 def search_fun(a):
-    i = len(alist)
+    i = len(account)
     m = 0
-    test = str(input("Enter username:"))
-    test1 = str(input(" Enter password:"))
+    input_account = str(input("Enter username:"))
+    input_passwd = str(input(" Enter password:"))
     for m in range(i):
-        if test == alist[m]:
-            if test1 == plist[m]:
-                print(f" Login successful. Welcome {alist[m]} !")
+        if input_account == account[m]:
+            if input_passwd == password[m]:
+                print(f" Login successful. Welcome {account[m]} !")
                 exit(0)
             else:
                 break
@@ -18,18 +21,16 @@ def search_fun(a):
     return 0
 
 
-x = 3
-while x > 0:
-    x -= 1
-    search_fun(x)
-    while x == 0:
-        qa = str(input("Are you a robot (Y/n)? "))
-        if qa == "n":
+log_try = 3
+while log_try > 0:
+    log_try -= 1
+    search_fun(log_try)
+    while log_try == 0:
+        robo_test = str(input("Are you a robot (Y/n)? "))
+        if robo_test == "n":
             x = 3
             break
-        elif qa == "Y":
-            exit(0)
-        elif qa == "":
+        elif robo_test == "Y" or "":
             exit(0)
         else:
             continue
