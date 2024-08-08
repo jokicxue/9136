@@ -1,4 +1,4 @@
-Keyboard = ["abcdefghijklm",
+keyboard = ["abcdefghijklm",
             "nopqrstuvwxyz"]
 
 def move(x0, y0, x1, y1):
@@ -6,34 +6,35 @@ def move(x0, y0, x1, y1):
     y = y1 - y0
 
     if x < 0:
-        print('l'*(-x))
+        moves.append('l'*(-x))
     elif x > 0:
-        print('r'*x)
+        moves.append('r'*x)
     if y < 0:
-        print('u'*(-y))
+        moves.append('u'*(-y))
     elif y > 0:
-        print('d'*y)
+        moves.append('d'*y)
 
-    print('p')
+    moves.append('p')
     return x1,y1
 
-
+#主函数
 string = input("Enter a string to type:")
-
+moves = []
 if not string.isalpha():
     print(f"The string cannot be typed out.")
     exit(0)
 a=0
 stringx= []
 stringy = []
-for b in range(len(string)):
-    for i in range(2) :
-        for j in range(14):
-             if string[b] == Keyboard[i][j]:
-                 stringx.append(j)
-                 stringy.append(i)
-                 a += 1
-    b = b+1
+#位置
+def search(key):
+    for char, row in enumerate(keyboard):
+        if key in row:
+            stringx.append(char)
+            stringy.append(row.index(key))
+
+
+
 
 
 x,y = 0,0
