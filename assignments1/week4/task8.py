@@ -35,6 +35,7 @@ def move(x0, y0, x1, y1,i):
     return x1, y1
 
 def search(key,keyboard,i):#位置
+    global moves, stringx, stringy
     for char, row in enumerate(keyboard):
         if key in row:
             stringx[i].append(char)
@@ -59,13 +60,12 @@ if num == 0:
     print("Invalid input")
     exit(0)
 
-moves = [[]]
-stringx = [[]]
-stringy = [[]]
+moves = [[], [], [], []] # ....
+stringx = [[], [], [], []]
+stringy = [[], [], [], []]
 
-
-for char in string:
-    for i in range(len(num)):
+for i in range(len(num)):
+    for char in string:
         search(char,kb[num[i]],i)
 
 x,y = 0,0
@@ -80,3 +80,4 @@ shortest = min(moves,key=len)
 
 
 print(f"The robot must perform the following operations:\n{''.join(shortest)}", end = "")
+print(moves, stringx,stringy,sep="\n")
