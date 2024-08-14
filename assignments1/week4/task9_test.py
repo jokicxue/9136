@@ -18,25 +18,51 @@ kb = [ ["abcdefghijklm",
         "clunk",
         "waqfs"]]
 
-def move(x0, y0, x1, y1,i):
-    x = x1 - x0
-    y = y1 - y0
-    leny = len(kb[i][0])
-    lenx = len(kb[i])
+def sround_distance(pos1, pos2, length):
+    direct = abs(pos1 - pos2)
+    sround = length - direct
+    if sround == direct:
+        return sround
+    return min(sround, direct)
 
-'''
-    if y < 0:
-        moves[i].append('l'*(-y))
-    elif y > 0:
-        moves[i].append('r'*y)
-    if x < 0:
-        moves[i].append('u'*(-x))
-    elif x > 0:
-        moves[i].append('d'*x)
-'''
+def move(x0, y0, x1, y1, i):
+    keyboard = kb[i]
+    num_row = len(keyboard)
+    num_col = len(keyboard[0])
+
+    y_distance = sround_distance(y0, y1, num_col)
+    x_distance = sround_distance(x0, x1, num_row)
+
+    #print('x0:', x0, 'y0:', y0, 'x1:', x1, 'y1:', y1)
+    #print('y_dis:', y_distance, 'x_dis:', x_distance)
+
+    if y0 != y1:
+        if y_distance == abs(y1 - y0):  # No wrapping
+            if y1 < y0:
+                moves[i].append('l' * y_distance)
+            else:
+                moves[i].append('r' * y_distance)
+        else:  # Wrapping
+            if y1 < y0:
+                moves[i].append('r' * y_distance + 'w')
+            else:
+                moves[i].append('l' * y_distance + 'w')
+
+    if x0 != x1:
+        if x_distance == abs(x1 - x0):  # No wrapping
+            if x1 < x0:
+                moves[i].append('u' * x_distance)
+            else:
+                moves[i].append('d' * x_distance)
+        else:  # Wrapping
+            if x1 < x0:
+                moves[i].append('d' * x_distance + 'w')
+            else:
+                moves[i].append('u' * x_distance + 'w')
+
     moves[i].append('p')
-    #print(i,moves)
     return x1, y1
+
 
 def search(key,keyboard,i):#位置
 

@@ -1,56 +1,100 @@
-# 键盘布局
-keyboard = [
-    "abcdefghijklm",
-    "nopqrstuvwxyz"
+kb = [
+    ["abcdefghijklm", "nopqrstuvwxyz"],
+    ["789", "456", "123", "0.-"],
+    ["chunk", "vibex", "gymps", "fjord", "waltz"],
+    ["bemix", "vozhd", "grypt", "clunk", "waqfs"]
 ]
 
 
-def get_position(char):
-    """ 获取字符在键盘上的位置 """
-    for i, row in enumerate(keyboard):
-        if char in row:
-            return (i, row.index(char))
-    return None
+def wrap_around_distance(pos1, pos2, length):
+    """计算包裹距离"""
+    direct_distance = abs(pos1 - pos2)
+    wrap_distance = length - direct_distance
+    return min(direct_distance, wrap_distance)
 
 
-def move_to(start, end):
-    """ 从起始位置移动到目标位置的指令 """
-    moves = []
-    start_row, start_col = start
-    end_row, end_col = end
+def move(x0, y0, x1, y1, i):
+    keyboard = kb[i]
+    num_rows = len(keyboard)
+    num_cols = len(keyboard[0])
 
-    # 水平移动
-    if start_col < end_col:
-        moves.append('r' * (end_col - start_col))
-    elif start_col > end_col:
-        moves.append('l' * (start_col - end_col))
+    # 计算水平和垂直距离
+    y_distance = wrap_around_distance(y0, y1, num_cols)
+    x_distance = wrap_around_distance(x0, x1, num_rows)
 
-    # 垂直移动
-    if start_row < end_row:
-        moves.append('d' * (end_row - start_row))
-    elif start_row > end_row:
-        moves.append('u' * (start_row - end_row))
+    if y0 != y1:
+        if y1 < y0:
+            moves[i].append('l' * y_distance + 'w')
+        else:
+            moves[i].append('r' * y_distance + 'w')
+    if x0 != x1:
+        if x1 < x0:
+            moves[i].append('u' * x_distance + 'w')
+        else:
+            moves[i].append('d' * x_distance + 'w')
 
-    return ''.join(moves)
+    moves[i].append('p')
+    return x1, y1
 
 
-def plan_actions(string):
-    """ 规划 Robbie 的动作 """
-    actions = []
-    current_position = (0, 0)  # 从 'a' 开始
+def search(key, keyboard, i):
+    for char, row in enumerate(keyboard):
+        if key in row:
+            stringx[i].append(char)
+            stringy[i].append(row.index(key))
 
+
+def verify(string, keyboards):
+    kbnum = []
+    for keyboard in keyboards:
+        if all(any(char in row for row in keyboard) for char in string):
+            kbnum.append(keyboards.index(keyboard))
+    return kbnum if kbnum else False
+
+
+def shortest(moves):
+    moves0 = [''.join(m) for m in moves]
+    shortest = min(moves0, key=len, default='')
+    index = moves0.index(shortest) if shortest in moves0 else -1
+    return shortest, index
+
+
+# 主函数
+string = input("Enter a string to type: ")
+kb_choice = int(input("Choose a keyboard (0 to {}): ".format(len(kb) - 1)))
+
+if kb_choice < 0 or kb_choice >= len(kb):
+    print("Invalid keyboard choice.")
+    exit(0)
+
+num = verify(string, kb)
+if not num:
+    print("The string cannot be typed out.")
+    exit(0)
+
+moves = [[] for _ in range(len(kb))]
+stringx = [[] for _ in range(len(kb))]
+stringy = [[] for _ in range(len(kb))]
+
+for i in range(len(num)):
     for char in string:
-        target_position = get_position(char)
-        if target_position:
-            actions.append(move_to(current_position, target_position))
-            actions.append('p')
-            current_position = target_position
+        search(char, kb[num[i]], num[i])
 
-    return ''.join(actions)
+x, y = 0, 0
+for k in num:
+    for s in range(len(stringx[k])):
+        x, y = move(x, y, stringx[k][s], stringy[k][s], k)
+    x, y = 0, 0
 
+shortest0, index_short = shortest(moves)
+index_kb = num[index_short] if index_short != -1 else -1
 
-# 主程序
-if __name__ == "__main__":
-    user_input = input("请输入字符串：")
-    actions = plan_actions(user_input)
-    print(f"Robbie 的动作计划：{actions}")
+if index_kb != -1:
+    print("Configuration used:")
+    print('-' * (len(kb[index_kb][0]) + 4))
+    for row in kb[index_kb]:
+        print(f"| {row} |")
+    print('-' * (len(kb[index_kb][0]) + 4))
+    print(f"The robot must perform the following operations:\n{''.join(shortest0)}", sep="\n")
+else:
+    print("No valid keyboard layout found.")
