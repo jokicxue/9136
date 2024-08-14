@@ -32,70 +32,53 @@ def move(x0, y0, x1, y1,i):
         moves[i].append('d'*x)
 
     moves[i].append('p')
-    #print(i,moves)
     return x1, y1
 
 def search(key,keyboard,i):#位置
-
+    global moves, stringx, stringy
     for char, row in enumerate(keyboard):
         if key in row:
             stringx[i].append(char)
             stringy[i].append(row.index(key))
 
 
-def verify(string, keyboards):
+def verify(string,keyboards):
     kbnum = []
     for keyboard in keyboards:
-        if all(any(char in row for row in keyboard) for char in string):
+        if all(any(char in row for row in keyboard)for char in string):
+            #assert isinstance(keyboard, object)
             kbnum.append(keyboards.index(keyboard))
+        #elif keyboards.index(keyboard) == 3 and len(kbnum) > 0:
     return kbnum if kbnum else False
 
-def shortest(moves):
-    moves0 = [[],[],[],[]]
-    for row in range(len(moves)):
-        moves0[row] = ''.join(moves[row])
-
-    shortest = max(moves0, key=len)
-    index = moves0.index(shortest)
-    for i in range(len(moves0)):
-        if len(moves0[i]) < len(shortest) and len(moves0[i]) != 0:
-            shortest = moves0[i]
-            index = i
-    return shortest, index
+    #return 0
 #主函数
 string = input("Enter a string to type: ")
 
 num = verify(string,kb)
 if num == 0:
-    print("The string cannot be typed out.")
+    print("Invalid input")
     exit(0)
 
-moves = [[], [], [], []] #
+moves = [[], [], [], []] # ....
 stringx = [[], [], [], []]
 stringy = [[], [], [], []]
 
 for i in range(len(num)):
     for char in string:
-        search(char,kb[num[i]],num[i])
+        search(char,kb[num[i]],i)
 
 x,y = 0,0
 k = 0
 for k in range(len(num)):
-    for s in range(len(stringx[num[k]])):
-        x,y = move(x,y,stringx[num[k]][s],stringy[num[k]][s],num[k])
+    for s in range(len(stringx[k])):
+        x,y = move(x,y,stringx[k][s],stringy[k][s],num[k])
     x,y = 0,0
 
-shortest0, index_short = shortest(moves)
-#print(moves)
-#print(shortest0,index_short)
-#print(num, stringx, stringy, moves, sep="\n")
-
-
-print("Configuration used:")
-print('-'*(len(kb[index_short][0])+4))
-for row in kb[index_short]:
-    print(f"| {row} |")
-print('-'*(len(kb[index_short][0])+4))
-
-print(f"The robot must perform the following operations:\n{''.join(shortest0)}", sep="\n")
-#print(num, stringx, stringy, moves, sep="\n")
+shortest = min(moves,key=len)
+if len(shortest) == 0:
+    moves.remove(shortest)
+    if moves != 0:
+        shortest = min(moves, key=len)
+print(f"The robot must perform the following operations:\n{''.join(shortest)}", sep="\n")
+print(moves, stringx,stringy,sep="\n")
