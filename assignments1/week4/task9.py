@@ -18,24 +18,55 @@ kb = [ ["abcdefghijklm",
         "clunk",
         "waqfs"]]
 
-def move(x0, y0, x1, y1,i):
-    x = x1 - x0
-    y = y1 - y0
-    leny = len(kb[i][0])
-    lenx = len(kb[i])
+def sround_distance(pos1, pos2, length):
+    direct = abs(pos1 - pos2)
+    sround = length - direct
+    return min(sround, direct), sround
 
-'''
-    if y < 0:
-        moves[i].append('l'*(-y))
-    elif y > 0:
-        moves[i].append('r'*y)
-    if x < 0:
-        moves[i].append('u'*(-x))
-    elif x > 0:
-        moves[i].append('d'*x)
-'''
+def move(x0, y0, x1, y1, i):
+    keyboard = kb[i]
+    num_row = len(keyboard)
+    num_col = len(keyboard[0])
+
+    while (x0, y0) != (x1, y1):
+        # Handle horizontal movement (y)
+        if y0 != y1:
+            y_distance, y_sround = sround_distance(y0, y1, num_col)
+            if y_distance == abs(y1 - y0) and y_distance != y_sround:  # No wrapping
+                if y1 < y0:
+                    y0 -= 1
+                    moves[i].append('l')
+                else:
+                    y0 += 1
+                    moves[i].append('r')
+            else:  # Wrapping
+                if y1 < y0:
+                    y0 = (y0 + 1) % num_col  # Wrap around to the right
+                    moves[i].append('rw')
+                else:
+                    y0 = (y0 - 1) % num_col  # Wrap around to the left
+                    moves[i].append('lw')
+
+        # Handle vertical movement (x)
+        if x0 != x1:
+            x_distance,x_sround = sround_distance(x0, x1, num_row)
+            if x_distance == abs(x1 - x0) and x_distance != x_sround:  # No wrapping
+                if x1 < x0:
+                    x0 -= 1
+                    moves[i].append('u')
+                else:
+                    x0 += 1
+                    moves[i].append('d')
+            else:  # Wrapping
+                if x1 < x0:
+                    x0 = (x0 + 1) % num_row  # Wrap around downward
+                    moves[i].append('dw')
+                else:
+                    x0 = (x0 - 1) % num_row  # Wrap around upward
+                    moves[i].append('uw')
+
+    # Finally, add the 'p' action for pressing the key
     moves[i].append('p')
-    #print(i,moves)
     return x1, y1
 
 def search(key,keyboard,i):#位置
@@ -101,4 +132,5 @@ for row in kb[index_short]:
 print('-'*(len(kb[index_short][0])+4))
 
 print(f"The robot must perform the following operations:\n{''.join(shortest0)}", sep="\n")
-#print(num, stringx, stringy, moves, sep="\n")
+print(num, stringx, stringy, ''.join(moves[0]),''.join(moves[1]),''.join(moves[2]),''.join(moves[3]), sep="\n")
+
