@@ -1,138 +1,130 @@
-from assignments1.week4.task7 import keyboard
-
 keyboard_configs = [ ["abcdefghijklm", "nopqrstuvwxyz"],
      ["789", "456", "123",  "0.-"],
     ["chunk", "vibex",  "gymps", "fjord", "waltz"],
     ["bemix", "vozhd","grypt","clunk", "waqfs"]]
+
+def verify(string, keyboards):
+    keyboard_verified_num = []
+    for keyboard in keyboards:
+        if all(any(char in row for row in keyboard) for char in string):
+            keyboard_verified_num.append(keyboards.index(keyboard))
+    return keyboard_verified_num if keyboard_verified_num else False
+
+def search(key,keyboard,keyboard_config_num):#位置
+    for char, row in enumerate(keyboard):
+        if key in row:
+            char_pos_row[keyboard_config_num].append(char)
+            char_pos_col[keyboard_config_num].append(row.index(key))
 
 def move_distance(origin_pos, target_pos, length):
     direct = abs(origin_pos - target_pos)
     warp = length - direct
     return min(warp, direct),warp
 
-def move(x0, y0, x1, y1, i):
-    keyboard = keyboard_configs[i]
+def move(origin_row, origin_col, target_row, target_col, keyboard_num_config):
+    keyboard = keyboard_configs[keyboard_num_config]
     len_row = len(keyboard)
     len_col = len(keyboard[0])
 
-    y_distance, y_sround = move_distance(y0, y1, len_col)
-    x_distance, x_sround = move_distance(x0, x1, len_row)
+    col_distance, col_warp = move_distance(origin_col, target_col, len_col)
+    row_distance, row_warp = move_distance(origin_row, target_row, len_row)
 
-    if y0 != y1:
-        if y_distance == abs(y1 - y0) and y_distance != y_sround:  # No wrapping
-            if y1 < y0:
-                moves[i].append('l' * y_distance)
+    if origin_col != target_col:
+        if col_distance == abs(target_col - origin_col) and col_distance != col_warp:  # No wrapping
+            if target_col < origin_col:
+                moves[keyboard_num_config].append('l' * col_distance)
             else:
-                moves[i].append('r' * y_distance)
+                moves[keyboard_num_config].append('r' * col_distance)
         else:  # Wrapping
-            if y1 < y0:
-                for dis in range(y_sround):
-                    moves[i].append('r')
-                    y0 += 1
-                    if y0 == len_col:
-                        y0 = 0
-                        moves[i].append('w')
+            if target_col < origin_col:
+                for dis in range(col_warp):
+                    moves[keyboard_num_config].append('r')
+                    origin_col += 1
+                    if origin_col == len_col:
+                        origin_col = 0
+                        moves[keyboard_num_config].append('w')
 
             else:
-                for dis in range(y_sround):
-                    moves[i].append('l')
-                    y0 -= 1
-                    if y0 == -1:
-                        y0 = len_col-1
-                        moves[i].append('w')
+                for dis in range(col_warp):
+                    moves[keyboard_num_config].append('l')
+                    origin_col -= 1
+                    if origin_col == -1:
+                        origin_col = len_col-1
+                        moves[keyboard_num_config].append('w')
 
-    if x0 != x1:
-        if x_distance == abs(x1 - x0) and x_distance != x_sround:  # No wrapping
-            if x1 < x0:
-                moves[i].append('u' * x_distance)
+    if origin_row != target_row:
+        if row_distance == abs(target_row - origin_row) and row_distance != row_warp:  # No wrapping
+            if target_row < origin_row:
+                moves[keyboard_num_config].append('u' * row_distance)
             else:
-                moves[i].append('d' * x_distance)
+                moves[keyboard_num_config].append('d' * row_distance)
         else:  # Wrapping
-            if x1 < x0:
-                for dis in range(x_sround):
-                    moves[i].append('d')
-                    x0 += 1
-                    if x0 == len_row:
-                        x0 = 0
-                        moves[i].append('w')
+            if target_row < origin_row:
+                for dis in range(row_warp):
+                    moves[keyboard_num_config].append('d')
+                    origin_row += 1
+                    if origin_row == len_row:
+                        origin_row = 0
+                        moves[keyboard_num_config].append('w')
             else:
-                for dis in range(x_sround):
-                    moves[i].append('u')
-                    x0 -= 1
-                    if x0 == -1:
-                        x0 = len_row-1
-                        moves[i].append('w')
-    moves[i].append('p')
-    return x1, y1
+                for dis in range(row_warp):
+                    moves[keyboard_num_config].append('u')
+                    origin_row -= 1
+                    if origin_row == -1:
+                        origin_row = len_row-1
+                        moves[keyboard_num_config].append('w')
+    moves[keyboard_num_config].append('p')
+    return target_row, target_col
 
+def shortest(moves_list):
 
-def search(key,keyboard,i):#位置
+    filtered_list = [[char for char in row if char != 'w'] for row in moves_list]
 
-    for char, row in enumerate(keyboard):
-        if key in row:
-            stringx[i].append(char)
-            stringy[i].append(row.index(key))
-
-
-def verify(string, keyboards):
-    kbnum = []
-    for keyboard in keyboards:
-        if all(any(char in row for row in keyboard) for char in string):
-            kbnum.append(keyboards.index(keyboard))
-    return kbnum if kbnum else False
-
-def shortest(moves):
-    moves0 = [[],[],[],[]]
-    filtered_list = [[],[],[],[]]
-    moves1 = [[],[],[],[]]
-    for row in range(len(moves)):
-        moves0[row] = ''.join(moves[row])
-
-    for x in range(len(moves0)):
-        filtered = list(filter(lambda x: x != 'w', moves0[x]))
-        moves1[x] = filtered
-
-    for row in range(len(moves1)):
-        filtered_list[row] = ''.join(moves1[row])
-
-    shortest = max(filtered_list, key=len)
+    for row in range(len(filtered_list)):
+        filtered_list[row] = ''.join(filtered_list[row])
+    
+    shortest = min([x for x in filtered_list if len(x) > 0], key=len)
     index = filtered_list.index(shortest)
-    for i in range(len(filtered_list)):
-        if len(filtered_list[i]) < len(shortest) and len(filtered_list[i]) != 0:
-            shortest = filtered_list[i]
-            index = i
-    return shortest, index,moves0[index]
-
+    return shortest, index
 
 #主函数
-string = input("Enter a string to type: ")
+input_string = input("Enter a string to type: ")
 
-keyboard_verified = verify(string,keyboard_configs)
+keyboard_verified = [[] for num in range(len(keyboard_configs))]
+char_pos_row = [[] for num in range(len(keyboard_configs))]
+char_pos_col = [[] for num in range(len(keyboard_configs))]
+moves = [[] for num in range(len(keyboard_configs))]
+
+keyboard_verified = verify(input_string,keyboard_configs)
 if keyboard_verified == 0:
     print("The string cannot be typed out.")
     exit(0)
 
-moves = [[], [], [], []] #
-stringx = [[], [], [], []]
-stringy = [[], [], [], []]
-
 for i in range(len(keyboard_verified)):
-    for char in string:
+    for char in input_string:
         search(char,keyboard_configs[keyboard_verified[i]],keyboard_verified[i])
 
-x,y = 0,0
-k = 0
-for k in range(len(keyboard_verified)):
-    for s in range(len(stringx[keyboard_verified[k]])):
-        x,y = move(x,y,stringx[keyboard_verified[k]][s],stringy[keyboard_verified[k]][s],keyboard_verified[k])
-    x,y = 0,0
+row,col = 0,0
+num = 0
+for num in range(len(keyboard_verified)):
+    for char in range(len(char_pos_row[keyboard_verified[num]])):
+        row,col = move(row,col,char_pos_row[keyboard_verified[num]][char],char_pos_col[keyboard_verified[num]][char],keyboard_verified[num])
+    row,col = 0,0
 
-shortest0, index_short, movelist = shortest(moves)
+for row in range(len(moves)):
+    moves[row] = ''.join(moves[row])
 
+shortest_move, index_short = shortest(moves)
 print("Configuration used:")
 print('-'*(len(keyboard_configs[index_short][0])+4))
 for row in keyboard_configs[index_short]:
     print(f"| {row} |")
 print('-'*(len(keyboard_configs[index_short][0])+4))
+print(f"The robot must perform the following operations:\n{moves[index_short]}", sep="\n")
 
-print(f"The robot must perform the following operations:\n{''.join(movelist)}", sep="\n")
+
+'''
+print(keyboard_verified, char_pos_row, char_pos_col, sep="\n")
+print(f"{''.join(moves[0])},{''.join(moves[1])},{''.join(moves[2])},{''.join(moves[3])}")
+print(index_short)
+'''
