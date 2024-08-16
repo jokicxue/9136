@@ -3,27 +3,25 @@ This program
 '''
 account = ["Ava","Leo","Raj","Zoe","Max","Sam","Eli","Mia","Ian","Kim"]
 password = ["12345","abcde","pass1","qwert","aaaaa","zzzzz","11111","apple","hello","admin"]
-def search_fun(t):
-    i = len(account)
-    m = 0
-    n = 0
+def search(try_times):
+    #i = len(account)
     input_account = str(input("Enter username:"))
     input_passwd = str(input(" Enter password:"))
-    for m in range(i):
-        if input_account == account[m]:
-            for n in range(i):
-                if input_passwd == password[n]:
-                    print(f" Login successful. Welcome {account[m]} !")
+    for account_index in range(len(account)):
+        if input_account == account[account_index]:
+            for password_index in range(len(account)):
+                if input_passwd == password[password_index]:
+                    print(f" Login successful. Welcome {account[account_index]} !")
                     exit(0)
                 else:
-                    n += 1
+                    password_index += 1
         else:
-            m += 1
-    print(f" Login incorrect. Tries left: {t}")
+            account_index += 1
+    print(f" Login incorrect. Tries left: {try_times}")
     return 0
 
 
 log_try = 3
 while log_try > 0:
     log_try -= 1
-    search_fun(log_try)
+    search(log_try)
