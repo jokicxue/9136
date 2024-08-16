@@ -1,5 +1,5 @@
 '''
-The program prompt the user to input a string and calculate which keyboard layouts can type the given string.
+The program prompts the user to input a string and calculates which keyboard layouts can type the given string.
 It then computes the required movement for typing the string on these available keyboards, considering
 that the robot Robbie can wrap around the keyboard.
 Finally, it identifies the keyboard configuration that results in the shortest movement path

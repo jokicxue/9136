@@ -1,6 +1,6 @@
 '''
-The program ask the user to input a string,
-and plan the actions for Robbie the robot to type this string on a keyboard.
+The program asks the user to input a string,
+and plans the actions for Robbie the robot to type this string on a keyboard.
 It also outputs the list of movement required for the robot to complete the task
 '''
 
