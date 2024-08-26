@@ -12,8 +12,11 @@ def menu():
     # Create a dictonary to record rabbits
     rabbits = {}
 
-    # Create a dictonary to record the Relationship
-    relation = {}
+    # Create a dictonary to record the parent and their kittens
+    parents = {}
+
+    # Create a dictonary to record the kitten and their parents
+    kittens = {}
 
     # Show the menu
     while True:
@@ -30,22 +33,22 @@ def menu():
         choice = input()
         # To do the different task
         if choice == "1":
-            create_rabbit(rabbits)
+            create_rabbit(rabbits,parents,kittens)
         elif choice == "2":
             input_age(rabbits)
         elif choice == "3":
             list_rabbit(rabbits)
         elif choice == "4":
-            create_relation()
+            create_relationship(rabbits, parents, kittens)
         elif choice == "5":
-            list_family()
+            list_family(rabbits, parents, kittens)
         elif choice == "0":
             break
         else:
             continue
 
 # Define a funcion to create rabbit
-def create_rabbit(rabbits):
+def create_rabbit(rabbits,parents,kittens):
     while True:
         # Set a variable to recive the name
         name = input("Input the new rabbit's name:\n")
@@ -53,6 +56,8 @@ def create_rabbit(rabbits):
             print("That name is already in the database.")
         else:
             rabbits[name] = None
+            parents[name] = []
+            kittens[name] = []
             break
 
 # Define a function to collect age
@@ -83,15 +88,48 @@ def list_rabbit(rabbits):
             print(f"{name} (Unknown)")
 
 # Define a function to record the relationship
-def create_relation(relation,rabbits):
-    parent_name = input("Input the parent's name:\n")
-    kitten_name = input("Input the kitten's name:\n")
+def create_relationship(rabbits, parents, kittens):
+    while True:
+        # Ask the user to input the parent's and kitten's name
+        parent_name = input("Input the parent's name:\n")
+        kitten_name = input("Input the kitten's name:\n")
 
-    # Check the name in rabbits or not
-    if parent_name in rabbits:
-        if parent_name in relation:
-            
+        # Check the name in rabbits or not, if not add into rabbits
+        if parent_name not in rabbits:
+            rabbits[parent_name] = None
+            parents[parent_name] = []
+            kittens[parent_name] = []
 
+        if kitten_name not in rabbits:
+            rabbits[kitten_name] = None
+            parents[kitten_name] = []
+            kittens[kitten_name] = []
+        
+        # add the kitten name to the parent
+        parents[parent_name].append(kitten_name)
+        # add the parent name to the kitten
+        kittens[kitten_name].append(parent_name)
+        break
+
+# Define a function to list the family
+def list_family(rabbits, parents, kittens):
+    while True:
+        name = input("Input the rabbit's name:\n")
+
+        # If name in rabbits
+        if name in rabbits:
+            # find the parents name in list kittens
+            print(f"Parents of {name}:")
+            for parent in sorted(kittens[name]):
+                print(parent)
+
+            # find the kittens name in list parents
+            print(f"Kittens of {name}:")
+            for kitten in sorted(parents[name]):
+                print(kitten)
+            break
+        else:
+            print("That name is not in the database.")
 
 if __name__ == "__main__":
     menu()
