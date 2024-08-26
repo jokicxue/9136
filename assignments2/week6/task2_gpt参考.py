@@ -1,0 +1,123 @@
+# Define a menu
+def menu():
+    # Create dictionaries to record rabbits and their relationships
+    rabbits = {}
+    parents = {}
+    kittens = {}
+
+    # Show the menu
+    while True:
+        print("==================================")
+        print("Enter your choice:")
+        print("1. Create a Rabbit.")
+        print("2. Input Age of a Rabbit.")
+        print("3. List Rabbytes.")
+        print("4. Create a Parental Relationship.")
+        print("5. List Direct Family of a Rabbit.")
+        print("0. Quit.")
+        print("==================================")
+
+        choice = input()
+        # To do the different task
+        if choice == "1":
+            create_rabbit(rabbits, parents, kittens)
+        elif choice == "2":
+            input_age(rabbits)
+        elif choice == "3":
+            list_rabbit(rabbits)
+        elif choice == "4":
+            create_parental_relationship(rabbits, parents, kittens)
+        elif choice == "5":
+            list_direct_family(rabbits, parents, kittens)
+        elif choice == "0":
+            break
+        else:
+            continue
+
+
+# Define a function to create a rabbit
+def create_rabbit(rabbits, parents, kittens):
+    while True:
+        # Set a variable to receive the name
+        name = input("Input the new rabbit's name:\n")
+        if name in rabbits:
+            print("That name is already in the database.")
+        else:
+            rabbits[name] = None
+            parents[name] = []
+            kittens[name] = []
+            break
+
+
+# Define a function to collect age
+def input_age(rabbits):
+    while True:
+        # Set a variable to check the name
+        check_name = input("Input the rabbit's name:\n")
+
+        # If the rabbit is in the database, ask the age
+        if check_name in rabbits:
+            age = int(input(f"Input {check_name}'s age:\n"))
+            rabbits[check_name] = age
+            break
+
+        # If not in the database, tell the user and keep asking
+        else:
+            print("That name is not in the database.")
+
+
+# Define a function to list all the rabbits
+def list_rabbit(rabbits):
+    print("Rabbytes:")
+
+    # Check the age before output
+    for name, age in rabbits.items():
+        if age is not None:
+            print(f"{name} ({age})")
+        else:
+            print(f"{name} (Unknown)")
+
+
+# Define a function to create a parental relationship
+def create_parental_relationship(rabbits, parents, kittens):
+    while True:
+        parent_name = input("Input the parent's name:\n")
+        kitten_name = input("Input the kitten's name:\n")
+
+        # Create rabbits if they don't exist
+        if parent_name not in rabbits:
+            rabbits[parent_name] = None
+            parents[parent_name] = []
+            kittens[parent_name] = []
+
+        if kitten_name not in rabbits:
+            rabbits[kitten_name] = None
+            parents[kitten_name] = []
+            kittens[kitten_name] = []
+
+        # Update relationships
+        parents[kitten_name].append(parent_name)
+        kittens[parent_name].append(kitten_name)
+        break
+
+
+# Define a function to list direct family of a rabbit
+def list_direct_family(rabbits, parents, kittens):
+    while True:
+        rabbit_name = input("Input the rabbit's name:\n")
+
+        # Check if the rabbit exists
+        if rabbit_name in rabbits:
+            print(f"Parents of {rabbit_name}:")
+            for parent in sorted(parents[rabbit_name]):
+                print(parent)
+            print(f"Kittens of {rabbit_name}:")
+            for kitten in sorted(kittens[rabbit_name]):
+                print(kitten)
+            break
+        else:
+            print("That name is not in the database.")
+
+
+if __name__ == "__main__":
+    menu()
