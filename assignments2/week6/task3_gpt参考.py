@@ -1,9 +1,9 @@
 # Define a menu
 def menu():
     # Create dictionaries to record rabbits and their relationships
-    rabbits = {}
-    parents = {}
-    kittens = {}
+    #rabbits = {}
+    #parents = {}
+    #kittens = {}
 
     # Show the menu
     while True:
@@ -31,7 +31,7 @@ def menu():
         elif choice == "5":
             list_direct_family(rabbits, parents, kittens)
         elif choice == "6":
-            find_cousins(rabbits, parents, kittens)
+            find_cousins(rabbits)
         elif choice == "0":
             break
         else:
@@ -113,9 +113,10 @@ def list_direct_family(rabbits, parents, kittens):
 
 
 # Define a function to find cousins of a rabbit
-def find_cousins(rabbits, parents, kittens):
+def find_cousins(rabbits):
     while True:
         rabbit_name = input("Input the rabbit's name:\n")
+        print(f"parents:{parents}\n",f"kittens:{kittens}")
 
         if rabbit_name in rabbits:
             cousins = set()
@@ -133,4 +134,7 @@ def find_cousins(rabbits, parents, kittens):
 
 
 if __name__ == "__main__":
+    rabbits = {}
+    parents = {}
+    kittens = {}
     menu()
