@@ -1,3 +1,4 @@
+# write your program here
 import csv
 from tabulate import tabulate
 
@@ -12,19 +13,32 @@ def read_csv_files():
             tables.append((headers, rows))
     return tables
 
+'''
+def read_csv_files():
+    tables = []
+    filenames = ['grades.csv', 'class_students.csv', 'rabbytes_club_students.csv', 'rabbytes_data.csv']
+    for filename in filenames:
+        with open(filename, 'r') as file:
+            reader = csv.reader(file)
+            headers = next(reader)
+            rows = [row for row in reader]
+            rows.insert(0, headers)  # 将 headers 插入到 rows 的第一行
+            tables.append(rows)
+    return tables
+'''
 def list_tables(tables):
     data = []
     for i, (headers, rows) in enumerate(tables):
         data.append([i, len(headers), len(rows)])
-    print(tabulate(data, headers=["Index", "Columns", "Rows"], tablefmt="grid"))
+    print(tabulate(data, headers=["Index", "Columns", "Rows"], tablefmt="plain"))
 
 def display_table(tables):
     while True:
         try:
-            index = int(input("Choose a table index (to display): "))
+            index = int(input("Choose a table index (to display):\n"))
             if 0 <= index < len(tables):
                 headers, rows = tables[index]
-                print(tabulate(rows, headers=headers, tablefmt="grid"))
+                print(tabulate(rows, headers=headers, tablefmt="plain"))
                 break
             else:
                 print("Incorrect table index. Try again.")
@@ -34,7 +48,7 @@ def display_table(tables):
 def duplicate_table(tables):
     while True:
         try:
-            index = int(input("Choose a table index (to duplicate): "))
+            index = int(input("Choose a table index (to duplicate):\n"))
             if 0 <= index < len(tables):
                 headers, rows = tables[index]
                 tables.append((headers, rows.copy()))
