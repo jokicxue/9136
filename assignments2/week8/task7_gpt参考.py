@@ -17,27 +17,11 @@ def read_csv_files():
 def list_tables(tables):
     data = []
     for i, (headers, rows) in enumerate(tables):
-        total_rows = len(rows) + 1
+        total_rows = len(rows) +1
         data.append([i, len(headers), total_rows])
         #data.append([i, len(headers), len(rows)])
 
-    table_str = tabulate(data, headers=["Index", "Columns", "Rows"], tablefmt="plain", numalign="right",
-                         stralign="left")
-
-    # 计算列宽
-    col_widths = [max(len(str(item)) for item in col) for col in zip(*data, ["Index", "Columns", "Rows"])]
-
-    # 生成分隔线
-    separator = ' '.join('-' * (w + 2) for w in col_widths)
-
-    # 打印表头
-    print(' '.join(f"{header:{w}}" for header, w in zip(["Index", "Columns", "Rows"], col_widths)))
-    print(separator)
-
-    # 打印表数据
-    for row in data:
-        print(' '.join(f"{item:{w}}" for item, w in zip(row, col_widths)))
-    #print(tabulate(data, headers=["Index", "Columns", "Rows"], tablefmt="plain", numalign="right", stralign="left"))
+    print(tabulate(data, headers=["Index", "Columns", "Rows"]))
 
 def display_table(tables):
     while True:
@@ -45,7 +29,7 @@ def display_table(tables):
             index = int(input("Choose a table index (to display):\n"))
             if 0 <= index < len(tables):
                 headers, rows = tables[index]
-                print(tabulate(rows, headers=headers, tablefmt="plain", numalign="right", stralign="left"))
+                print(tabulate(rows, headers=headers))
                 break
             else:
                 print("Incorrect table index. Try again.")
