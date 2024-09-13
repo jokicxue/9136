@@ -1,11 +1,16 @@
-# write your program here
 '''
+GROUP:GRP398
+Author:
+Dingkun Yao(dyao0004@student.monash.edu)
+Nikolai Xue(xxue0016@student.monash.edu)
 This program is to show, create, and delete tables. 
 1. You can see the data about the number of columns and rows of all tables. 
 2. You can see the details of each table.
 3. Copy table
 4. Copy data from one table in the new order
 5. Delete table
+6. Delete column
+7. Restore table
 hint
 to address the deletion and restore
 we create a shadow_table to represent the original table
@@ -14,7 +19,6 @@ if delete table 0, shadow_table[0] change to 0
 shadow_table = [0,1,1,1]
 if restore table 0, shadow_table[0] change to 1
 shadow_table = [1,1,1,1]
-
 '''
 import csv
 from tabulate import tabulate
@@ -37,6 +41,7 @@ def menu():
         print("0. Quit.")
         print("==================================")
 
+        # create a variable to save the user input
         choice = input()
 
         if choice == '1':
@@ -92,7 +97,7 @@ def list_table(table:list,shadow_table:list):
         if shadow_table[i] == 1:
             table_list.append([i,len(header),len(row)+1])
         
-        # "0" don't print
+        # "0" doesn't print
         else:
             pass
     print(tabulate(table_list,headers = ["Index", "Columns", "Rows"]))
@@ -100,15 +105,20 @@ def list_table(table:list,shadow_table:list):
 # define a function to display the table
 def display_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (to display):\n"))
+
+        # check the input value
         if choose in range(len(table)) and shadow_table[choose] == 1:
             print(tabulate(table[choose][1],headers=table[choose][0]))
             break
+        
+        # tell the user input is not right
         else:
             print("Incorrect table index. Try again.")
 
 # define a function to copy the table
-def duplicate_table(table:list,shadow_table:list):
+def duplicate_table(table:list,shadow_table:list)->list:
     while True:
         choose = int(input("Choose a table index (to duplicate):\n"))
         
@@ -126,7 +136,7 @@ def duplicate_table(table:list,shadow_table:list):
             print("Incorrect table index. Try again.")
 
 # define a function to copy the table's specified columns
-def create_table(table:list,shadow_table:list):
+def create_table(table:list,shadow_table:list)->list:
     while True:
         choose = int(input("Choose a table index (to create from):\n"))
         
@@ -137,7 +147,7 @@ def create_table(table:list,shadow_table:list):
             columns = input("Enter the comma-separated indices of the columns to keep:\n")
             columns_list = columns.split(",")
 
-            # create lists to storage data of new table
+            # create 3 lists to storage header and data of new table
             new_table = []
             new_table_header = []
             new_table_data = []
@@ -171,10 +181,13 @@ def create_table(table:list,shadow_table:list):
 # define a function to delete the table
 def delete_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (for table deletion):\n"))
         
-        # check the input
+        # check the input and table exists
         if choose in range(len(table)) and shadow_table[choose] == 1:
+
+            # change it into delete
             shadow_table[choose] = 0
             break
         else:
@@ -183,6 +196,7 @@ def delete_table(table:list,shadow_table:list):
 # define a function to delete column
 def delete_column(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (for column deletion):\n"))
         
         # check the input
@@ -213,6 +227,7 @@ def delete_column(table:list,shadow_table:list):
                         every_table_data.append(every_value)
                 del_table_data.append(every_table_data)
             
+            # add data into del_table
             del_table = [del_table_header,del_table_data]
 
             # replace the original item
@@ -225,6 +240,7 @@ def delete_column(table:list,shadow_table:list):
 # define a function to restore the table
 def restore_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (for restoration):\n"))
         
         # check the input, if table status is 0 change it into 1(available)

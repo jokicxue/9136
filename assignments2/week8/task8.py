@@ -1,11 +1,20 @@
-# write your program here
 '''
+GROUP:GRP398
+Author:
+Nikolai Xue(xxue0016@student.monash.edu)
+Dingkun Yao(dyao0004@student.monash.edu)
 This program is to show, create, and delete tables. 
 1. You can see the data about the number of columns and rows of all tables. 
 2. You can see the details of each table.
 3. Copy table
 4. Copy data from one table in the new order
 5. Delete table
+hint
+to address the deletion
+we create a shadow_table to represent the original table
+shadow_table = [1,1,1,1]
+if delete table 0, shadow_table[0] change to 0
+shadow_table = [0,1,1,1]
 '''
 import csv
 from tabulate import tabulate
@@ -26,6 +35,7 @@ def menu():
         print("0. Quit.")
         print("==================================")
 
+        # create a variable to save the user input
         choice = input()
 
         if choice == '1':
@@ -40,8 +50,10 @@ def menu():
             delete_table(table,shadow_table)
         elif choice == '0':
             break
-# define a function to read csv files and change table
+
+# define a function to read csv files and change to table
 def set_table()->list:
+    # create a table list to save all data
     table = []
 
     # this shadow_table uses 0 or 1 to record the status of each table
@@ -59,6 +71,7 @@ def set_table()->list:
             # storage the left rows in one list
             rows = [row for row in reader]
 
+            # add data into table list
             table.append((header,rows))
 
             # "1" means table is available, "0" means table is been deleted
@@ -85,16 +98,22 @@ def list_table(table:list,shadow_table:list):
 # define a function to display the table
 def display_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (to display):\n"))
+
+        # check the choose is in range and not be deleted(==1)
         if choose in range(len(table)) and shadow_table[choose] == 1:
             print(tabulate(table[choose][1],headers=table[choose][0]))
             break
+
+        # tell user input is not right 
         else:
             print("Incorrect table index. Try again.")
 
 # define a function to copy the table
 def duplicate_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (to duplicate):\n"))
         
         # check the input in shadow list
@@ -113,6 +132,7 @@ def duplicate_table(table:list,shadow_table:list):
 # define a function to copy the table's specified columns
 def create_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (to create from):\n"))
         
         # check the input
@@ -122,7 +142,7 @@ def create_table(table:list,shadow_table:list):
             columns = input("Enter the comma-separated indices of the columns to keep:\n")
             columns_list = columns.split(",")
 
-            # create the header of the new table
+            # create 3 new lists one for new table, one for the header and one for data
             new_table = []
             new_table_header = []
             new_table_data = []
@@ -156,10 +176,12 @@ def create_table(table:list,shadow_table:list):
 
 def delete_table(table:list,shadow_table:list):
     while True:
+        # create a variable to save table index
         choose = int(input("Choose a table index (for table deletion):\n"))
         
-        # check the input
+        # check the input if the table exists
         if choose in range(len(table)) and shadow_table[choose] == 1:
+            # change it status to delete
             shadow_table[choose] = 0
             break
         else:

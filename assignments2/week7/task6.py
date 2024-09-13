@@ -1,4 +1,8 @@
 '''
+GROUP:GRP398
+Author:
+Nikolai Xue(xxue0016@student.monash.edu)
+Dingkun Yao(dyao0004@student.monash.edu)
 This program is designed to collect the program from user.
 1.it can list all the variables.
 2.it can change the variables format.
@@ -25,6 +29,7 @@ def menu():
         print("1. Print program.\n2. List.\n3. Format.\n4. Rename.\n0. Quit.")
         print("==================================")
 
+        # create a variable to save the user input
         choice = input()
         if choice == "1":
             print_program(program)
@@ -44,8 +49,14 @@ def menu():
 def all_program(program, variable):
     print("Enter the Python program to analyze, line by line. Enter 'end' to finish.")
     while True:
+
+        # create a variable to save the user input
         user_program = input()
+
+        # check the user input
         if user_program != "end":
+
+            # add the variable into list
             program.append(user_program)
 
             # devide the program into variables and store the variables
@@ -62,6 +73,8 @@ def all_program(program, variable):
 # define a function to print all programs
 def print_program(program):
     print("Program:")
+
+    # print each program
     for every_program in program:
         print(every_program)
 
@@ -77,14 +90,23 @@ def list_variable(variable):
 def change_format(program, variable):
     while True:
         print("Pick a variable:")
+
+        # create a variable to save the user input
         pick_variable = input()
+
+        # create a variable to save the new format
         snake_variable = ""
+
 
         if pick_variable in variable:
             for count in range(len(pick_variable)):
+
+                # if the letter is uppercase, change it into lowercases
                 if pick_variable[count].isupper():
                     if count != 0:
                         snake_variable += "_" + pick_variable[count].lower()
+                    
+                    # if the letter is lowercase, just add it
                     else:
                         snake_variable += pick_variable[count].lower()
                 else:

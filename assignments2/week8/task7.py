@@ -1,3 +1,13 @@
+'''
+GROUP:GRP398
+Author:
+Nikolai Xue(xxue0016@student.monash.edu)
+Dingkun Yao(dyao0004@student.monash.edu)
+This program is to show and copy tables. 
+1. You can see the data about the number of columns and rows of all tables. 
+2. You can see the details of each table.
+3. Copy table
+'''
 import csv
 from tabulate import tabulate
 import copy
@@ -14,6 +24,7 @@ def menu():
         print("0. Quit.")
         print("==================================")
 
+        # create a variable to save the user input
         choice = input()
 
         if choice == '1':
@@ -27,7 +38,9 @@ def menu():
 
 # define a function to read csv files and convert to table
 def set_table():
+    # create a table list to save all the data
     table = []
+
     files = ['grades.csv', 'class_students.csv', 'rabbytes_club_students.csv', 'rabbytes_data.csv']
     for every_file in files:
         with open(every_file, 'r') as file:
@@ -79,6 +92,7 @@ def display_table(table):
 # define a function to copy the table
 def duplicate_table(table):
     while True:
+        # create a variable to save the user input
         choose = int(input("Choose a table index (to duplicate):\n"))
         
         # check the input

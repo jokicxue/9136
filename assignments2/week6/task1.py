@@ -1,4 +1,8 @@
 '''
+GROUP:GRP398
+Author:
+Dingkun Yao(dyao0004@student.monash.edu)
+Nikolai Xue(xxue0016@student.monash.edu)
 This program is to create a database of rabbytes,
 and record the name and age of the rabbits
 '''
@@ -17,8 +21,10 @@ def menu():
         print("3. List Rabbytes.")
         print("0. Quit.")
         print("==================================")
-    
+
+        # create a variable to save the user input
         choice = input()
+        
         # To do the different task
         if choice == "1":
             create_rabbit(rabbits)
@@ -36,8 +42,12 @@ def create_rabbit(rabbits):
     while True:
         # Set a variable to recive the name
         name = input("Input the new rabbit's name:\n")
+
+        # check the name
         if name in rabbits:
             print("That name is already in the database.")
+        
+        # if not in list, add this name
         else:
             rabbits[name] = None
             break
@@ -64,8 +74,12 @@ def list_rabbit(rabbits):
 
     # check the age before output
     for name,age in rabbits.items():
+
+        # if the rabbit has age information, output it
         if age != None:
             print(f"{name} ({age})")
+        
+        # if there is no age information, print unknown
         else:
             print(f"{name} (Unknown)")
 

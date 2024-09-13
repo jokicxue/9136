@@ -1,4 +1,8 @@
 '''
+GROUP:GRP398
+Author:
+Dingkun Yao(dyao0004@student.monash.edu)
+Nikolai Xue(xxue0016@student.monash.edu)
 This program is to create a database of rabbytes:
 1. record the name and age of the rabbits
 2. create parental relationship between them
@@ -29,8 +33,10 @@ def menu():
         print("5. List Direct Family of a Rabbit.")        
         print("0. Quit.")
         print("==================================")
-    
+
+        # create a variable to save the user input
         choice = input()
+
         # To do the different task
         if choice == "1":
             create_rabbit(rabbits,parents,kittens)
@@ -52,8 +58,12 @@ def create_rabbit(rabbits,parents,kittens):
     while True:
         # Set a variable to recive the name
         name = input("Input the new rabbit's name:\n")
+
+        # if the name in the rabbits list, tell user
         if name in rabbits:
             print("That name is already in the database.")
+        
+        # if not, add information
         else:
             rabbits[name] = None
             parents[name] = []
@@ -82,6 +92,8 @@ def list_rabbit(rabbits):
 
     # check the age before output
     for name,age in rabbits.items():
+
+        # if there is an age value then output
         if age != None:
             print(f"{name} ({age})")
         else:

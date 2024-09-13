@@ -1,10 +1,24 @@
 '''
+GROUP:GRP398
+Author:
+Dingkun Yao(dyao0004@student.monash.edu)
+Nikolai Xue(xxue0016@student.monash.edu)
 This program is to create a database of rabbytes:
 1. record the name and age of the rabbits
 2. create parental relationship between them
 - number of parents is between 0 and 2
 - a rabbit cannot be their own ancester
 3. list their relationship
+4. record the relationship of cousins
+#        AA1
+#       |  |
+#      A1   A2
+#     | |   | |
+#    a1 a2 a3 a4
+- use "a1" find parents "A1"
+- use "A1" find grandparents "AA1"
+- use "AA1" find parent's sibling "A2"
+- use "A2" find cousins "a3""a4"
 '''
 
 # Define a menu
@@ -55,8 +69,11 @@ def create_rabbit(rabbits,parents,kittens):
     while True:
         # Set a variable to recive the name
         name = input("Input the new rabbit's name:\n")
+
+        # if name in the rabbits list
         if name in rabbits:
             print("That name is already in the database.")
+        # add the information
         else:
             rabbits[name] = None
             parents[name] = []
@@ -137,13 +154,21 @@ def list_family(rabbits, parents, kittens):
 # Define a function to find the cousin
 def find_cousin(rabbits, parents, kittens):
     while True:
+        # Ask the user to input the name
         kitten_name = input("Input the rabbit's name:\n")
         if kitten_name in rabbits:
+
+            # define a list to storage cousins' name
             cousin = []
+
+            # 1.find the kitten's parents
             for parent in kittens[kitten_name]:
+                # 2. find the kitten's grandparents(parent's parents)
                 for grandparent in kittens[parent]:
+                    # 3. find grandparent's other children(parent's sibling)
                     for parent_sibling in parents[grandparent]:
                         if parent != parent_sibling:
+                            # 4. find the chlidren of parent's sibling
                             cousin += parents[parent_sibling]
             print(f"Cousins of {kitten_name}:")
             for every_cousin in sorted(cousin):

@@ -1,4 +1,8 @@
 '''
+GROUP:GRP398
+Author:
+Nikolai Xue(xxue0016@student.monash.edu)
+Dingkun Yao(dyao0004@student.monash.edu)
 This program is designed to collect the program from user.
 And it can list all the variables.
 '''
@@ -18,6 +22,7 @@ def menu():
         print("1. Print program.\n2. List.\n0. Quit.")
         print("==================================")
 
+        # create a variable to save the user input
         choice = input()
         if choice == "1":
             print_program(program)
@@ -32,6 +37,7 @@ def menu():
 def all_program(program,variable):
     print("Enter the Python program to analyze, line by line. Enter 'end' to finish.")
     while True:
+        # create a variable to save the user input
         user_program = input()
         if user_program != "end":
             program.append(user_program)
