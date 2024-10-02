@@ -200,34 +200,31 @@ class MagicContainer(Container):
         '''
         with open(file_name, newline='') as original_data:
             reader = csv.reader(original_data)
-            next(reader)  # Skip the header
+            next(reader)
             magic_containers = []
 
             for row in reader:
-                containers_list = []
                 clean_row = [field.strip() for field in row]
+                sub_container_name = clean_row[1]
 
-                for each_sub_container in clean_row[1:]:
-                    # find the container with the same name in containers
-                    match_container = None
-                    for cont in containers:
-                        if cont.cont_name == each_sub_container:
-                            match_container = cont
-                            break
+                containers_list = []
+                match_container = None
+                for cont in containers:
+                    if cont.cont_name == sub_container_name:
+                        match_container = cont
+                        break
 
-                    if match_container:
-                        # create a new container with the same default value
-                        new_container = Container(
-                            cont_name=match_container.cont_name,
-                            cont_empty_weight=match_container.cont_empty_weight,
-                            cont_capacity=match_container.cont_capacity
-                        )
-                        containers_list.append(new_container)
+                if match_container:
 
-                magic_container = MultiContainer(clean_row[0], containers_list)
-                magic_containers.append(magic_container)
+                    magic_container = MagicContainer(
+                        cont_name=clean_row[0],
+                        cont_empty_weight=match_container.cont_empty_weight,
+                        cont_capacity=match_container.cont_capacity
+                    )
+                    magic_containers.append(magic_container)
 
         return magic_containers
+
 
 class Item:
     '''
