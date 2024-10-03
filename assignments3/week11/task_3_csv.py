@@ -6,7 +6,7 @@ User can select a container and add multi containers
 3.Or quit the game
 '''
 
-import pandas as pd
+
 import csv
 class Container:
     '''
