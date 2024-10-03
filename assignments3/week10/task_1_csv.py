@@ -85,8 +85,8 @@ class Item:
 
 if __name__ == "__main__":
     # read the container and item files
-    containers = Container.read_container("containers.csv")
-    items = Item.read_item("items.csv")
+    containers = Container.read_container("../week11/containers.csv")
+    items = Item.read_item("../week11/items.csv")
 
     # calculate the number of items including containers
     total_items = len(containers) + len(items)
