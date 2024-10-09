@@ -13,18 +13,31 @@ class Container:
     define a class contains container's variables and methods
     '''
 
-    # set instance variables for containers name, empty weight, capacity and what items contained
     def __init__(self, cont_name, cont_empty_weight, cont_capacity):
+        '''
+        set instance variables for containers name, empty weight, capacity and what items contained
+        '''
         self.cont_name = cont_name
         self.cont_empty_weight = cont_empty_weight
         self.cont_capacity = cont_capacity
         self.cont_items = []
 
-    # calculate how much capacity is being used
-    def used_capacity(self):
+    def used_capacity(self)-> int:
+        '''
+        calculate how much capacity is being used
+        '''
         return sum(item.item_weight for item in self.cont_items)
 
+    def total_weight(self) -> int:
+        '''
+        calculate the total weight of the container
+        '''
+        return self.cont_empty_weight + self.used_capacity()
+
     def add_item(self, loot_item):
+        '''
+        add item into container
+        '''
         # if the weight of the loot item is lighter than the remaining capacity
         if loot_item.item_weight <= self.cont_capacity - sum(item.item_weight for item in self.cont_items):
 
@@ -34,12 +47,10 @@ class Container:
 
         return False
 
-    # calculate the total weight of the container
-    def total_weight(self):
-        return self.cont_empty_weight + self.used_capacity()
-
-    # show the items in the container
     def show_items(self):
+        '''
+        show the items in the container
+        '''
         # print container's details
         print(self)
 
@@ -47,16 +58,16 @@ class Container:
         for item in self.cont_items:
             print(f"   {item}")
 
-
-    # print the information of the container
     def __str__(self):
+        '''
+        print the information of the container
+        '''
         return f"{self.cont_name} (total weight: {self.total_weight()}, empty weight: {self.cont_empty_weight}, capacity: {self.used_capacity()}/{self.cont_capacity})"
 
-    # class method to read file
     @classmethod
     def read_container(cls, file_name):
         '''
-        This function is to set containers list
+        read file of containers and set a list of Container objects
         '''
         # read csv file and set an empty container list
         containers = []
@@ -77,12 +88,17 @@ class Item:
     define a class contains item's variables and methods
     '''
 
-    # ser instance variables for item: name and weight
     def __init__(self, item_name, item_weight):
+        '''
+        set instance variables for item: name and weight
+        '''
         self.item_name = item_name
         self.item_weight = item_weight
 
     def __str__(self):
+        '''
+        print the basic information of an item
+        '''
         return f"{self.item_name} (weight: {self.item_weight})"
 
     @classmethod
@@ -94,6 +110,7 @@ class Item:
         items = []
         with open(file_name, newline = "") as item_file:
             reader = csv.reader(item_file)
+            #skip the header
             next(reader)
 
         # add each item into items list
@@ -105,11 +122,20 @@ class Item:
         return sorted(items, key=lambda x: x.item_name)
 
 class Gamesystem:
+    '''
+    This class is a basic game system contains method
+    1. create new items
+    2. pick container
+    3. game table
+    '''
     def __init__(self, items, containers):
         self.containers = containers
         self.items = items
 
     def pick_container(self):
+        '''
+        this function is to pick container
+        '''
         while True:
             container_name = input("Enter the name of the container: ")
             for container in self.containers:
@@ -118,6 +144,9 @@ class Gamesystem:
             print(f'"{container_name}" not found. Try again.')
 
     def gametable(self):
+        '''
+        show the game table
+        '''
         pick_container = self.pick_container()
 
         if pick_container:
@@ -149,12 +178,16 @@ class Gamesystem:
                     break
 
 if __name__ == "__main__":
-    containers = Container.read_container("../week11/containers.csv")
-    items = Item.read_item("../week11/items.csv")
+    # read 2 files one is container information, the other one is item information
+    containers = Container.read_container("containers.csv")
+    items = Item.read_item("items.csv")
 
+    # calculate the number of all items including containers
     total_items = len(containers) + len(items)
     print(f"Initialised {total_items} items including {len(containers)} containers.\n")
 
+    # start game
     gamestart = Gamesystem(items, containers)
 
+    # show the table of game
     gamestart.gametable()

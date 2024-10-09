@@ -10,30 +10,31 @@ class Container:
     define a class contains container's variables and methods
     '''
 
-    # set instance variables for containers name, empty weight, capacity and what items contained
     def __init__(self, cont_name, cont_empty_weight, cont_capacity):
+        '''
+        set instance variables for containers name, empty weight, capacity and what items contained
+        '''
         self.cont_name = cont_name
         self.cont_empty_weight = cont_empty_weight
         self.cont_capacity = cont_capacity
         self.cont_items = []
 
-    # calculate how much capacity is being used
-    def used_capacity(self):
+    def used_capacity(self) -> int:
+        '''
+        calculate how much capacity is being used
+        '''
         return sum(item.item_weight for item in self.cont_items)
 
-    # calculate the total weight of the container
-    def total_weight(self):
+    def total_weight(self) -> int:
+        '''
+        calculate the total weight of the container
+        '''
         return self.cont_empty_weight + self.used_capacity()
 
-    # print the information of the container
-    def __str__(self):
-        return f"{self.cont_name} (total weight: {self.total_weight()}, empty weight: {self.cont_empty_weight}, capacity: {self.used_capacity()}/{self.cont_capacity})"
-
-    # class method to read file
     @classmethod
     def read_container(cls, file_name):
         '''
-        This function is to set containers list
+        read file of containers and set a list of Container objects
         '''
         # read csv file and set an empty container list
         containers = []
@@ -55,12 +56,17 @@ class Item:
     define a class contains item's variables and methods
     '''
 
-    # ser instance variables for item: name and weight
     def __init__(self, item_name, item_weight):
+        '''
+        set instance variables for item: name and weight
+        '''
         self.item_name = item_name
         self.item_weight = item_weight
 
     def __str__(self):
+        '''
+        print the basic information of an item
+        '''
         return f"{self.item_name} (weight: {self.item_weight})"
 
     @classmethod
@@ -85,13 +91,11 @@ class Item:
 
 if __name__ == "__main__":
     # read the container and item files
-    containers = Container.read_container("../week11/containers.csv")
-    items = Item.read_item("../week11/items.csv")
+    containers = Container.read_container("containers.csv")
+    items = Item.read_item("items.csv")
 
     # calculate the number of items including containers
     total_items = len(containers) + len(items)
-
-    #
     print(f"Initialised {total_items} items including {len(containers)} containers.\n")
 
     # print all items
