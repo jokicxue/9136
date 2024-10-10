@@ -91,7 +91,7 @@ class MultiContainer(Container):
     '''
     set child class to contain multiple containers
     '''
-    def __init__(self, name, containers):
+    def __init__(self, name: str, containers: list):
         '''
         multi container contains many container, so it's empty weight and capacity are the sum of all sub containers.
         '''
@@ -104,10 +104,15 @@ class MultiContainer(Container):
         '''
         the sum of used capacity of all sub containers
         '''
-        # calculate sub containers capacity
         return sum(cont.used_capacity() for cont in self.containers)
 
     def add_item(self, loot_item):
+        '''
+        add_item to sub containers
+        hint:
+        when add item to sub container both container and sub container will add weight
+        So if the item's weight is bigger than remaining capacity, the item can ONLY store in magic container
+        '''
         for cont in self.containers:
             # check the capacity
             if loot_item.item_weight <= cont.cont_capacity - cont.used_capacity():
@@ -118,7 +123,9 @@ class MultiContainer(Container):
         return False
 
     def show_items(self):
-        # print(f"{self.cont_name} (total weight: {self.total_weight()}, empty weight: {self.cont_empty_weight}, capacity: {self.used_capacity()}/{self.cont_capacity})")
+        '''
+        show the information of the container
+        '''
         print(self)
         for cont in self.containers:
             print(f"   {cont}")
