@@ -13,7 +13,6 @@ class Container:
     define a class contains container's variables and methods
     '''
 
-    # set instance variables for containers name, empty weight, capacity and what items contained
     def __init__(self, cont_name, cont_empty_weight, cont_capacity):
         """
         container should have name, empty weight, capacity and a list of items it contains
@@ -23,8 +22,13 @@ class Container:
         self.cont_capacity = cont_capacity
         self.cont_items = []
 
-    # calculate how much capacity is being used
-    def used_capacity(self):
+    def total_weight(self)-> int:
+        """
+        container's total weight equals its own weight plus the capacity used
+        """
+        return self.cont_empty_weight + self.used_capacity()
+
+    def used_capacity(self)-> int:
         """
         used capacity equals to total weight of all items
         """
@@ -38,7 +42,6 @@ class Container:
         if loot_item.item_weight <= self.cont_capacity - sum(item.item_weight for item in self.cont_items):
             # add loot item into container
             self.cont_items.append(loot_item)
-            # print(f'''Success! Item "{loot_item.item_name}" stored in container "{self.cont_name}".''')
             return True
 
         # or tell user can not store the loot item
@@ -46,14 +49,6 @@ class Container:
         # print(f'''Failure! Item "{loot_item.item_name}" NOT stored in container "{self.cont_name}".''')
         return False
 
-    # calculate the total weight of the container
-    def total_weight(self):
-        """
-        container's total weight equals its own weight plus the capacity used
-        """
-        return self.cont_empty_weight + self.used_capacity()
-
-    # show the items in the container
     def show_items(self):
         '''
         show the items in the container
@@ -65,25 +60,27 @@ class Container:
         for item in self.cont_items:
             print(f"   {item}")
 
-    # print the information of the container
     def __str__(self):
+        '''
+        print the information of container
+        '''
         return f"{self.cont_name} (total weight: {self.total_weight()}, empty weight: {self.cont_empty_weight}, capacity: {self.used_capacity()}/{self.cont_capacity})"
 
-    # class method to read file
     @classmethod
     def read_container(cls, file_name):
         '''
-        This function is to set containers list
+        read file of containers and set a list of Container objects
         '''
-        # read csv file and set an empty container list
         containers = []
         with open(file_name, newline = "") as container_file:
             reader = csv.reader(container_file)
+            # Skip the header
             next(reader)
 
-        # add each container into containers list
             for row in reader:
+                # set Container object name, empty weight and capacity
                 container = Container(row[0].strip(), int(row[1].strip()), int(row[2].strip()))
+                # add to containers list
                 containers.append(container)
 
         # return containers list and sort containers by name
@@ -91,13 +88,22 @@ class Container:
 
 
 class MultiContainer(Container):
+    '''
+    set child class to contain multiple containers
+    '''
     def __init__(self, name, containers):
+        '''
+        multi container contains many container, so it's empty weight and capacity are the sum of all sub containers.
+        '''
         total_empty_weight = sum(cont.cont_empty_weight for cont in containers)
         total_capacity = sum(cont.cont_capacity for cont in containers)
         super().__init__(name, total_empty_weight, total_capacity)
         self.containers = containers
 
     def used_capacity(self):
+        '''
+        the sum of used capacity of all sub containers
+        '''
         # calculate sub containers capacity
         return sum(cont.used_capacity() for cont in self.containers)
 
