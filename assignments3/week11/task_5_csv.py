@@ -1,6 +1,6 @@
 '''
 This program is designed as container system
-User can select a container and add multi containers and add magic containers
+User can select a container and add multi containers, add magic containers and magic multi containers.
 1.User can select items to store in the container
 2.User can check the details of container
 3.Or quit the game
@@ -15,6 +15,9 @@ class Container:
 
     # set instance variables for containers name, empty weight, capacity and what items contained
     def __init__(self, cont_name, cont_empty_weight, cont_capacity):
+        """
+        container should have name, empty weight, capacity and a list of items it contains
+        """
         self.cont_name = cont_name
         self.cont_empty_weight = cont_empty_weight
         self.cont_capacity = cont_capacity
@@ -22,9 +25,15 @@ class Container:
 
     # calculate how much capacity is being used
     def used_capacity(self):
+        """
+        used capacity equals to total weight of all items
+        """
         return sum(item.item_weight for item in self.cont_items)
 
     def add_item(self, loot_item):
+        '''
+        add_item into container
+        '''
         # if the weight of the loot item is lighter than the remaining capacity
         if loot_item.item_weight <= self.cont_capacity - sum(item.item_weight for item in self.cont_items):
             # add loot item into container
@@ -39,10 +48,16 @@ class Container:
 
     # calculate the total weight of the container
     def total_weight(self):
+        """
+        container's total weight equals its own weight plus the capacity used
+        """
         return self.cont_empty_weight + self.used_capacity()
 
     # show the items in the container
     def show_items(self):
+        '''
+        show the items in the container
+        '''
         # print container's details
         print(self)
 
