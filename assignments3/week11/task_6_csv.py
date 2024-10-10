@@ -28,7 +28,7 @@ class Item:
 
     def __str__(self) -> str:
         """
-        print the basic information of a item
+        print the basic information of an item
         """
         return f"{self.name} (weight: {self.weight})"
 
@@ -38,7 +38,7 @@ class Item:
         This method reads the file of items and set a list of objects
         """
 
-        # set a empty list to store objects
+        # set an empty list to store objects
         items = []
         with open(file_name, newline="") as item_file:
             reader = csv.reader(item_file)
@@ -370,7 +370,7 @@ class Gamesystem:
             container_name = input("Enter the name of the container: ")
             # traverse all container
             for container in self.containers:
-                # if container name matches user's choose
+                # if container name matches users choose
                 if container.name == container_name:
                     return self.create_new_items(container)
             print(f'"{container_name}" not found. Try again.')
