@@ -43,12 +43,7 @@ class Container:
 
             # add loot item into container
             self.cont_items.append(loot_item)
-            # print(f'''Success! Item "{loot_item.item_name}" stored in container "{self.cont_name}".''')
             return True
-
-        # or tell user can not store the loot item
-        # else:
-            # print(f'''Failure! Item "{loot_item.item_name}" NOT stored in container "{self.cont_name}".''')
         return False
 
     def show_items(self):
@@ -81,7 +76,7 @@ class Container:
             #skip the header
             next(reader)
 
-        # add each container into containers list
+            # add each container into containers list
             for row in reader:
                 container = Container(row[0].strip(), int(row[1].strip()), int(row[2].strip()))
                 containers.append(container)
@@ -244,10 +239,6 @@ class Gamesystem:
             for container in self.containers:
                 if container_name == container.cont_name:
                     return container
-            for multi_container in self.multi_containers:
-                if container_name == multi_container.cont_name:
-                    return multi_container
-            # else tell user choose again
             print(f'"{container_name}" not found. Try again.')
 
     def gametable(self):
@@ -269,12 +260,15 @@ class Gamesystem:
                     while True:
                         choose_item = input("Enter the name of the item: ")
                         for item in self.items:
+                            # if the item is in the item list
                             if choose_item == item.item_name:
+                                # add item into container
                                 if pick_container.add_item(item):
                                     print(f'''Success! Item "{item.item_name}" stored in container "{pick_container.cont_name}".''')
                                 else:
                                     print(f'''Failure! Item "{item.item_name}" NOT stored in container "{pick_container.cont_name}".''')
                                 break
+                        # ask user try again
                         else:
                             print(f'''"{choose_item}" not found. Try again.''')
                             continue
@@ -285,7 +279,7 @@ class Gamesystem:
                     break
 
 if __name__ == "__main__":
-    # read 2 files one is container information, the other one is item information
+    # read 3 files one is container information, one is item information, one is multi containers
     containers = Container.read_container("containers.csv")
     items = Item.read_item("items.csv")
     multi_containers = MultiContainer.read_multi_container("multi_containers.csv", containers)

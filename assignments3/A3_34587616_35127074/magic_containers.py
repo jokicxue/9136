@@ -270,8 +270,6 @@ class Gamesystem:
         add all items and containers
         """
         self.containers = containers + multi_containers + magic_containers
-        self.multi_containers = multi_containers
-        self.magic_containers = magic_containers
         self.items = items
 
     def pick_container(self):

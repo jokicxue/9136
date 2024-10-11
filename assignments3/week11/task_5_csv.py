@@ -43,10 +43,6 @@ class Container:
             # add loot item into container
             self.cont_items.append(loot_item)
             return True
-
-        # or tell user can not store the loot item
-        # else:
-        # print(f'''Failure! Item "{loot_item.item_name}" NOT stored in container "{self.cont_name}".''')
         return False
 
     def show_items(self):
@@ -262,11 +258,13 @@ class MagicMulticontainer(MultiContainer):
                     # find the container with the same name in containers
                     match_container = None
                     for multi_cont in multi_containers:
+                        # find multi containers
                         if multi_cont.cont_name == each_multi_container:
                             match_container = multi_cont
                             break
-
+                    
                     if match_container:
+                        # set object of magic multi containers
                         magic_multi_container = cls(clean_row[0], match_container.containers)
                         magic_multi_containers.append(magic_multi_container)
         return magic_multi_containers
@@ -319,6 +317,9 @@ class Gamesystem:
     3. game table
     '''
     def __init__(self, items, containers, multi_containers, magic_containers, magic_multi_containers):
+        """
+        add all items and containers
+        """
         self.containers = containers + multi_containers + magic_containers + magic_multi_containers
         self.multi_containers = multi_containers
         self.magic_containers = magic_containers
@@ -337,9 +338,6 @@ class Gamesystem:
             for container in self.containers:
                 if container_name == container.cont_name:
                     return container
-            for multi_container in self.multi_containers:
-                if container_name == multi_container.cont_name:
-                    return multi_container
             # else tell user choose again
             print(f'"{container_name}" not found. Try again.')
 
@@ -367,12 +365,11 @@ class Gamesystem:
                         # check the choose item in items list
                         for item in self.items:
                             if choose_item == item.item_name:
+                                # add item into contaienrs
                                 if pick_container.add_item(item):
-                                    print(
-                                        f'''Success! Item "{item.item_name}" stored in container "{pick_container.cont_name}".''')
+                                    print(f'''Success! Item "{item.item_name}" stored in container "{pick_container.cont_name}".''')
                                 else:
-                                    print(
-                                        f'''Failure! Item "{item.item_name}" NOT stored in container "{pick_container.cont_name}".''')
+                                    print(f'''Failure! Item "{item.item_name}" NOT stored in container "{pick_container.cont_name}".''')
                                 break
                         else:
                             print(f'''"{choose_item}" not found. Try again.''')
@@ -385,7 +382,7 @@ class Gamesystem:
 
 
 if __name__ == "__main__":
-    # read 2 files one is container information, the other one is item information
+    # read 5 files containers, item, multi containers, magic containers, magic multi containers
     containers = Container.read_container("containers.csv")
     items = Item.read_item("items.csv")
     multi_containers = MultiContainer.read_multi_container("multi_containers.csv", containers)

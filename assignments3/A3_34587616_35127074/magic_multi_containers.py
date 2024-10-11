@@ -1,6 +1,6 @@
 '''
 This program is designed as container system
-User can select a container and add multi containers and add magic containers
+User can select a container and add multi containers, add magic containers and magic multi containers.
 1.User can select items to store in the container
 2.User can check the details of container
 3.Or quit the game
@@ -14,39 +14,36 @@ class Container:
     '''
 
     def __init__(self, cont_name, cont_empty_weight, cont_capacity):
-        '''
+        """
         container should have name, empty weight, capacity and a list of items it contains
-        '''
+        """
         self.cont_name = cont_name
         self.cont_empty_weight = cont_empty_weight
         self.cont_capacity = cont_capacity
         self.cont_items = []
 
-    def used_capacity(self)-> int:
-        '''
-        calculate how much capacity is being used
-        '''
-        return sum(item.item_weight for item in self.cont_items)
-
-
     def total_weight(self)-> int:
-        '''
-        calculate the total weight of the container
-        '''
+        """
+        container's total weight equals its own weight plus the capacity used
+        """
         return self.cont_empty_weight + self.used_capacity()
+
+    def used_capacity(self)-> int:
+        """
+        used capacity equals to total weight of all items
+        """
+        return sum(item.item_weight for item in self.cont_items)
 
     def add_item(self, loot_item):
         '''
-        add item into container
+        add_item into container
         '''
         # if the weight of the loot item is lighter than the remaining capacity
         if loot_item.item_weight <= self.cont_capacity - sum(item.item_weight for item in self.cont_items):
-
             # add loot item into container
             self.cont_items.append(loot_item)
             return True
         return False
-
 
     def show_items(self):
         '''
@@ -61,7 +58,7 @@ class Container:
 
     def __str__(self):
         '''
-        print the information of the container
+        print the information of container
         '''
         return f"{self.cont_name} (total weight: {self.total_weight()}, empty weight: {self.cont_empty_weight}, capacity: {self.used_capacity()}/{self.cont_capacity})"
 
@@ -77,19 +74,21 @@ class Container:
             # Skip the header
             next(reader)
 
-        # add each container into containers list
             for row in reader:
+                # set Container object name, empty weight and capacity
                 container = Container(row[0].strip(), int(row[1].strip()), int(row[2].strip()))
+                # add to containers list
                 containers.append(container)
 
         # return containers list and sort containers by name
         return sorted(containers, key=lambda x: x.cont_name)
 
+
 class MultiContainer(Container):
     '''
     set child class to contain multiple containers
     '''
-    def __init__(self, name, containers):
+    def __init__(self, name: str, containers: list):
         '''
         multi container contains many container, so it's empty weight and capacity are the sum of all sub containers.
         '''
@@ -100,7 +99,7 @@ class MultiContainer(Container):
 
     def used_capacity(self):
         '''
-        calculate sub containers capacity
+        the sum of used capacity of all sub containers
         '''
         return sum(cont.used_capacity() for cont in self.containers)
 
@@ -170,13 +169,13 @@ class MultiContainer(Container):
                             cont_capacity=match_container.cont_capacity
                         )
                         containers_list.append(new_container)
-
                 # set a multi container object
                 multi_container = MultiContainer(clean_row[0], containers_list)
                 # add multi container into multi containers list
                 multi_containers.append(multi_container)
 
         return multi_containers
+
 
 class MagicContainer(Container):
     '''
@@ -186,39 +185,90 @@ class MagicContainer(Container):
         super().__init__(name, original_container.cont_empty_weight, original_container.cont_capacity)
         self.base_container = original_container
 
+
     def total_weight(self):
-        """
-        override total weight
-        """
+        '''
+        the weight of magic container will not change
+        '''
         return self.cont_empty_weight
-    
-    # read magic container files
+
     @classmethod
     def read_magic_containers(cls, file_name, containers):
-        with open(file_name, newline = "") as original_data:
+        '''
+        read file of magic containers and set object list of magic containers
+        '''
+        with open(file_name, newline="") as original_data:
             reader = csv.reader(original_data)
+            # skip the header
             next(reader)
             magic_containers = []
 
-            # traverse all rows
             for row in reader:
                 magic_containers_list = []
-                # strip the space
                 clean_row = [field.strip() for field in row]
 
-                # find the magic container
                 for each_magic_cont in clean_row[1:]:
                     match_container = None
+                    # traverse container in containers
                     for cont in containers:
-                        # if container name equal to magic container
+                        # if name matches the name of container
                         if cont.cont_name == each_magic_cont:
                             match_container = cont
                             break
-                # set object of MagicContainer
+
+                # set magic container object
                 magic_container = MagicContainer(clean_row[0], match_container)
+                # add object into list
                 magic_containers.append(magic_container)
 
         return magic_containers
+
+
+class MagicMulticontainer(MultiContainer):
+    '''
+    set child class MagicMulticontainer the ONLY difference is weight of magic multi container does not change
+    '''
+    def __init__(self, name, containers):
+        '''
+        the same sub containers as the parent class
+        '''
+        super().__init__(name, containers)
+
+    def total_weight(self):
+        '''
+        total weight will not change
+        '''
+        return self.cont_empty_weight
+
+    @classmethod
+    def read_magic_multicontainer(cls, file_name, multi_containers):
+        '''
+        read file of magic containers and set object list of magic containers
+        '''
+        magic_multi_containers = []
+        with open(file_name, newline='') as original_data:
+            reader = csv.reader(original_data)
+            # Skip the header
+            next(reader)
+
+            for row in reader:
+                clean_row = [field.strip() for field in row]
+
+                for each_multi_container in clean_row[1:]:
+                    # find the container with the same name in containers
+                    match_container = None
+                    for multi_cont in multi_containers:
+                        # find multi containers
+                        if multi_cont.cont_name == each_multi_container:
+                            match_container = multi_cont
+                            break
+                    
+                    if match_container:
+                        # set object of magic multi containers
+                        magic_multi_container = cls(clean_row[0], match_container.containers)
+                        magic_multi_containers.append(magic_multi_container)
+        return magic_multi_containers
+
 
 class Item:
     '''
@@ -247,7 +297,7 @@ class Item:
         items = []
         with open(file_name, newline = "") as item_file:
             reader = csv.reader(item_file)
-            #skip the header
+            # Skip the header
             next(reader)
 
         # add each item into items list
@@ -255,8 +305,9 @@ class Item:
                 item = Item(row[0].strip(), int(row[1].strip()))
                 items.append(item)
 
-        # return items list and sort items by name
+        # return sort items by name
         return sorted(items, key=lambda x: x.item_name)
+
 
 class Gamesystem:
     '''
@@ -265,13 +316,11 @@ class Gamesystem:
     2. pick container
     3. game table
     '''
-    def __init__(self, items, containers, multi_containers, magic_containers):
+    def __init__(self, items, containers, multi_containers, magic_containers, magic_multi_containers):
         """
         add all items and containers
         """
-        self.containers = containers + multi_containers + magic_containers
-        self.multi_containers = multi_containers
-        self.magic_containers = magic_containers
+        self.containers = containers + multi_containers + magic_containers + magic_multi_containers
         self.items = items
 
     def pick_container(self):
@@ -293,8 +342,10 @@ class Gamesystem:
         '''
         show the game table
         '''
+
         pick_container = self.pick_container()
 
+        # show game table
         if pick_container:
             while True:
                 print("==================================")
@@ -307,16 +358,16 @@ class Gamesystem:
                 if choice == "1":
                     while True:
                         choose_item = input("Enter the name of the item: ")
+
+                        # check the choose item in items list
                         for item in self.items:
-                            # if choosed item in item list
                             if choose_item == item.item_name:
-                                # add into containers
+                                # add item into contaienrs
                                 if pick_container.add_item(item):
                                     print(f'''Success! Item "{item.item_name}" stored in container "{pick_container.cont_name}".''')
                                 else:
                                     print(f'''Failure! Item "{item.item_name}" NOT stored in container "{pick_container.cont_name}".''')
                                 break
-                        # ask the user to try again
                         else:
                             print(f'''"{choose_item}" not found. Try again.''')
                             continue
@@ -326,20 +377,22 @@ class Gamesystem:
                 elif choice == "0":
                     break
 
+
 if __name__ == "__main__":
-    # read 4 files, container information, item information , multi containers and magic containers
+    # read 5 files containers, item, multi containers, magic containers, magic multi containers
     containers = Container.read_container("containers.csv")
     items = Item.read_item("items.csv")
     multi_containers = MultiContainer.read_multi_container("multi_containers.csv", containers)
     magic_containers = MagicContainer.read_magic_containers("magic_containers.csv", containers)
+    magic_multi_containers = MagicMulticontainer.read_magic_multicontainer("magic_multi_containers.csv", multi_containers)
 
     # calculate the number of all items including containers
-    total_items = len(containers) + len(items) + len(multi_containers)+len(magic_containers)
-    total_containers = len(containers)+len(multi_containers)+len(magic_containers)
+    total_items = len(containers) + len(items) + len(multi_containers) + len(magic_containers) + len(magic_multi_containers)
+    total_containers = len(containers) + len(multi_containers) + len(magic_containers) + len(magic_multi_containers)
     print(f"Initialised {total_items} items including {total_containers} containers.\n")
 
     # start game
-    gamestart = Gamesystem(items, containers, multi_containers, magic_containers)
+    gamestart = Gamesystem(items, containers, multi_containers, magic_containers, magic_multi_containers)
 
     # show the table of game
     gamestart.gametable()
